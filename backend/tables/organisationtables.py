@@ -7,7 +7,7 @@ app = Flask(__name__)
 # MySQL Configuration
 app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'root'  # Replace with your MySQL username
-app.config['MYSQL_PASSWORD'] = 'keerthi2005@'  # Replace with your MySQL password
+app.config['MYSQL_PASSWORD'] = 'Ashmi@2004'  # Replace with your MySQL password
 app.config['MYSQL_DB'] = 'sahyogdb'  # Replace with your MySQL database name
 
 # Initialize MySQL
@@ -19,15 +19,21 @@ def create_organisation_table():
     try:
         cursor = mysql.connection.cursor()
         cursor.execute('''
-            CREATE TABLE IF NOT EXISTS Organisation (
-                OrganisationName VARCHAR(255),
-                LicenseNumber VARCHAR(255) PRIMARY KEY,
-                DateOfEstablishment DATE,
-                Email VARCHAR(255),
-                PhoneNumber VARCHAR(15),
-                NumberOfEmployees INT,
-                noofNGOsregistered INT
-            );
+    CREATE TABLE IF NOT EXISTS Organisation (
+    OrganisationName VARCHAR(255),
+    LicenseNumber VARCHAR(255) PRIMARY KEY,
+    DateOfEstablishment DATE,
+    Email VARCHAR(255),
+    PhoneNumber VARCHAR(15),
+    NumberOfEmployees INT,
+    noofNGOsregistered INT,
+    FOREIGN KEY (NGOID) REFERENCES NGO(NGOID),
+    FOREIGN KEY (ReportID) REFERENCES Report(ReportID),
+    FOREIGN KEY (CampID) REFERENCES Camp(CampID),
+    FOREIGN KEY (VolunteerID) REFERENCES Volunteers(VolunteerID),
+    FOREIGN KEY (DonationID) REFERENCES Donations(DonationID),
+    FOREIGN KEY (DisasterID) REFERENCES Disaster(DisasterID)
+);
         ''')
         mysql.connection.commit()
         cursor.close()
@@ -105,5 +111,5 @@ def delete_organisation(license_number):
     except MySQLdb.Error as e:
         return jsonify({'error': f"Error deleting organisation: {e}"}), 400
 
-if __name__ == '__main__':
+if __name__ == '_main_':
     app.run(debug=True)

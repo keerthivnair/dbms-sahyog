@@ -7,7 +7,7 @@ app = Flask(__name__)
 # MySQL Configuration
 app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'root'  # Replace with your MySQL username
-app.config['MYSQL_PASSWORD'] = 'keerthi2005@'  # Replace with your MySQL password
+app.config['MYSQL_PASSWORD'] = 'Ashmi@2004'  # Replace with your MySQL password
 app.config['MYSQL_DB'] = 'sahyogdb'  # Replace with your MySQL database name
 
 # Initialize MySQL
@@ -21,19 +21,20 @@ def create_volunteers_table():
         # SQL query to create the Volunteers table
         cursor.execute('''
             CREATE TABLE IF NOT EXISTS Volunteers (
-                VolunteerID INT AUTO_INCREMENT PRIMARY KEY,
-                VolunteerName VARCHAR(255) NOT NULL,
-                VolunteerEmail VARCHAR(255),
-                Gender ENUM('Male', 'Female', 'Other'),
-                Age INT,
-                PlaceOfStay VARCHAR(255),
-                LanguagesKnown VARCHAR(255),
-                *PreviousExperience TEXT,
-                *Height DECIMAL(5, 2),  -- In meters
-                *Weight DECIMAL(5, 2),  -- In kilograms
-                *BMI DECIMAL(5, 2) AS (Weight / (Height * Height)) STORED,  -- Calculated BMI field
-                *EducationalQualification VARCHAR(255)
-            );
+    VolunteerID INT AUTO_INCREMENT PRIMARY KEY,
+    VolunteerName VARCHAR(255) NOT NULL,
+    VolunteerEmail VARCHAR(255),
+    Gender ENUM('Male', 'Female', 'Other'),
+    Age INT,
+    PlaceOfStay VARCHAR(255),
+    LanguagesKnown VARCHAR(255),
+    PreviousExperience TEXT,
+    Height DECIMAL(5, 2),  -- In meters
+    Weight DECIMAL(5, 2),  -- In kilograms
+    BMI DECIMAL(5, 2) AS (Weight / (Height * Height)) STORED,  -- Calculated BMI field
+    EducationalQualification VARCHAR(255)
+);
+
         ''')
         mysql.connection.commit()
         cursor.close()

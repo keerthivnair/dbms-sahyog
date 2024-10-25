@@ -9,7 +9,7 @@ CORS(app)
 # MySQL Configuration
 app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'root'  # Replace with your MySQL username
-app.config['MYSQL_PASSWORD'] = 'keerthi2005@'  # Replace with your MySQL password
+app.config['MYSQL_PASSWORD'] = 'Ashmi@2004'  # Replace with your MySQL password
 app.config['MYSQL_DB'] = 'sahyogdb'  # Replace with your MySQL database name
 
 # Initialize MySQL
@@ -23,26 +23,24 @@ def create_report_table():
         # SQL query to create the Report table
         cursor.execute('''
             CREATE TABLE IF NOT EXISTS Report (
-                ReportID INT AUTO_INCREMENT PRIMARY KEY,
-                ReportDate DATE,
-                ReportDetails TEXT,
-                ResourceID INT,
-                DonationID INT,
-                LocationID INT,
-                DonorID INT,
-                DisasterID INT,
-                CampID INT ,   
-                Volunteers_req INT,
-                Volunteers_avail INT, 
-                foreign key (VolunteerID) references Camp(Volunteers_avail),
-                foreign key (Volunteer_req) references Camp(Volunteers_req),       
-                #foreign key (ResourceID) references Resources(ResourceID),
-                #foreign key(DonationID) references Donations(DonationID),
-                #foreign key(LocationID) references Location (LocationID),
-                #foreign key(DonorID) references Donor(DonorID),
-                #foreign key(DisasterID) references Disaster(DisasterID),   
-                #foreign key(CampID) references Camp(CampID)   
-            );
+    ReportID INT AUTO_INCREMENT PRIMARY KEY,
+    ReportDate DATE,
+    ReportDetails TEXT,
+    ResourceID INT,
+    DonationID INT,
+    LocationID INT,
+    DonorID INT,
+    DisasterID INT,
+    CampID INT,
+    Volunteers_req INT,
+    Volunteers_avail INT,
+    FOREIGN KEY (ResourceID) REFERENCES Resources(ResourceID),
+    FOREIGN KEY (DonationID) REFERENCES Donations(DonationID),
+    FOREIGN KEY (LocationID) REFERENCES Location(LocationID),
+    FOREIGN KEY (DonorID) REFERENCES Donor(DonorID),
+    FOREIGN KEY (DisasterID) REFERENCES Disaster(DisasterID),
+    FOREIGN KEY (CampID) REFERENCES Camp(CampID)
+);
         ''')
         mysql.connection.commit()
         cursor.close()

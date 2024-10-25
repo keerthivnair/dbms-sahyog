@@ -7,7 +7,7 @@ app = Flask(__name__)
 # MySQL Configuration
 app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'root'  # Replace with your MySQL username
-app.config['MYSQL_PASSWORD'] = 'keerthi2005@'  # Replace with your MySQL password
+app.config['MYSQL_PASSWORD'] = 'Ashmi@2004'  # Replace with your MySQL password
 app.config['MYSQL_DB'] = 'sahyogdb'  # Replace with your MySQL database name
 
 # Initialize MySQL
@@ -22,13 +22,13 @@ def create_disaster_table():
 
         #change the primary key*****
         cursor.execute('''
-            CREATE TABLE IF NOT EXISTS Disaster (
-                DisasterID INT AUTO_INCREMENT PRIMARY KEY,
-                DisasterType VARCHAR(255),
-                SeverityLevel INT,
-                StartDate DATE,
-                **EndDate DATE
-            );
+           CREATE TABLE IF NOT EXISTS Disaster (
+    DisasterID INT AUTO_INCREMENT PRIMARY KEY,
+    DisasterType VARCHAR(255),
+    SeverityLevel INT,
+    StartDate DATE,
+    EndDate DATE
+);
         ''')
         mysql.connection.commit()
         cursor.close()
