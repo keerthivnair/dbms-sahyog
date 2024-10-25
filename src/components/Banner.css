@@ -1,0 +1,132 @@
+.banner {
+  position: relative;
+  text-align: center;
+  color: white;
+  background-color: #003366; /* Fallback background color */
+  width: 100%;
+  height: 570px; /* Adjust height as needed */
+  overflow: hidden; /* Ensures the slider fits within the container */
+}
+
+/* Text stays in the middle of the banner */
+.banner-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  width: 90%; 
+  padding: 10px 20px;
+  z-index: 10; 
+  border-radius: 8px;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Text styling */
+.banner-text h1 {
+  font-size: 3rem; /* Responsive font size */
+  margin-bottom: 15px;
+  text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7);
+}
+
+.banner-text p {
+  font-size: 1.2rem; /* Adjusted for better readability */
+  line-height: 1.5;
+  margin-top: 10px;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+}
+
+/* Slider styling */
+.slider {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+.slider img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* Ensures the images cover the entire slider area */
+  opacity: 0.9;
+  transition: transform 0.8s ease; 
+}
+
+.slider img:hover {
+  transform: scale(1.05); /* Zoom effect on hover */
+}
+
+/* News section styling */
+.news-section {
+  position: absolute; /* Position within the banner */
+  top: 20%; /* Position from the top */
+  right: 20px; /* Adjust position from the right */
+  transform: translateY(-20%); /* Center vertically relative to the section */
+  width: 250px; /* Adjusted fixed width for a mini news section */
+  z-index: 2; /* Ensure it appears above other content */
+  background-color: rgba(255, 255, 255, 0.9); /* White background for visibility */
+  border-radius: 10px; /* Rounded corners for the section */
+  padding: 10px; /* Padding around the news section */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Shadow effect */
+}
+
+.news-card {
+  background-color: rgba(255, 255, 255, 0.9); /* White background for news cards */
+  border-radius: 5px; /* Rounded corners */
+  padding: 10px; /* Smaller padding for mini cards */
+  margin: 5px 0; /* Less margin for mini cards */
+  transition: transform 0.3s, box-shadow 0.3s; /* Smooth transform and shadow */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Smaller shadow effect */
+}
+
+.news-card:hover {
+  transform: scale(1.05); /* Enlarge on hover */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Shadow on hover */
+}
+
+/* Slick slider dots styling */
+.slick-dots {
+  bottom: 10px; /* Position of dots */
+}
+
+.slick-dots li button:before {
+  font-size: 10px;
+  color: white; /* Color for dots */
+}
+
+/* Adjust responsiveness */
+@media (max-width: 768px) {
+  .banner-text h1 {
+    font-size: 2.5rem; /* Smaller font size for tablets */
+  }
+
+  .banner-text p {
+    font-size: 1.2rem; /* Responsive paragraph font size */
+  }
+
+  .news-section {
+    width: 70%; /* Responsive width for tablets */
+  }
+}
+
+@media (max-width: 480px) {
+  .banner-text h1 {
+    font-size: 2rem; /* Smaller font size for phones */
+  }
+
+  .banner-text p {
+    font-size: 1rem; /* Smaller paragraph font size */
+  }
+
+  .news-section {
+    width: 90%; /* Responsive width for phones */
+  }
+}

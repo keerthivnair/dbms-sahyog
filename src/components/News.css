@@ -1,0 +1,98 @@
+/* src/components/News.css */
+
+.news-section {
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+    background-color: #f0f8ff; /* Light background for visibility */
+    position: relative; /* For positioning the back-to-top button */
+    color: brown;
+  }
+  
+  .news-cards-container {
+    max-height: 420px; /* Set a height for the scrollable area */
+    overflow-y: auto; /* Enable vertical scrolling */
+    padding: 10px;
+    border: 1px solid #ccc; /* Optional border for visibility */
+    border-radius: 8px;
+    background: #ffffff; /* White background for cards */
+  }
+  
+  .news-card {
+    background: #ffffff; /* White background for cards */
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 15px;
+    margin: 10px 0;
+    transition: transform 0.2s; /* Smooth scaling on hover */
+    color: black;
+  }
+  
+  .news-card:hover {
+    transform: scale(1.05); /* Enlarge card on hover */
+  }
+  
+  .loading {
+    text-align: center;
+    font-size: 1.2rem;
+    color: #666;
+  }
+  
+  /* Back to Top Button */
+  .back-to-top {
+    position: fixed; /* Positioning for visibility */
+    bottom: 20px; /* Distance from the bottom */
+    right: 20px; /* Distance from the right */
+    background-color: #003366; /* Button color */
+    color: white; /* Text color */
+    border: none; /* Remove border */
+    border-radius: 5px; /* Rounded corners */
+    padding: 10px 15px; /* Button padding */
+    cursor: pointer; /* Cursor change on hover */
+    display: flex; /* Center icon */
+    align-items: center;
+    justify-content: center;
+    opacity: 0.7; /* Initial opacity */
+    transition: opacity 0.3s; /* Transition effect */
+  }
+  
+  .back-to-top:hover {
+    opacity: 1; /* Full opacity on hover */
+  }
+  
+  /* Media Queries for Responsiveness */
+  @media (max-width: 768px) {
+    .news-section {
+      padding: 5px;
+      width: 200px; /* Less padding on smaller screens */
+    }
+  
+    .news-card {
+      padding: 10px; /* Reduced padding for cards */
+      margin: 5px 0; /* Less margin */
+    }
+  
+    .back-to-top {
+      bottom: 15px; /* Adjust position */
+      right: 15px; /* Adjust position */
+      padding: 8px 12px; /* Smaller button size */
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .news-card {
+      font-size: 0.9rem; /* Smaller font size for cards */
+      padding: 8px; /* Even less padding */
+    }
+  
+    .loading {
+      font-size: 1rem; /* Smaller loading text */
+    }
+  
+    .back-to-top {
+      bottom: 10px; /* Further adjustment */
+      right: 10px; /* Further adjustment */
+      padding: 6px 10px; /* Smaller button size */
+    }
+  }
+  

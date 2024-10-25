@@ -2,6 +2,8 @@ from flask import Flask, request, jsonify
 from flask_mysqldb import MySQL
 import MySQLdb.cursors
 import requests
+import string
+import random
 
 app = Flask(__name__)
 
@@ -30,7 +32,8 @@ def create_ngo_table():
                 PhoneNumber VARCHAR(15),
                 AmountDonated DECIMAL(10, 2),
                 Priority INT,
-                Volunteers INT
+                Volunteers INT,
+                Password VARCHAR(255)
             );
         ''')
         mysql.connection.commit()
@@ -39,39 +42,39 @@ def create_ngo_table():
     except MySQLdb.Error as e:
         return f"Error creating NGO table: {e}"
 
-# Function to verify NGO license number
-def verify_license(license_number):
-    # Replace this URL with the actual government API endpoint for verification
-    api_url = f"https://api.example.com/verify_ngo?license_number={license_number}"
-    response = requests.get(api_url)
-    
-    if response.status_code == 200:
-        return response.json().get('verified', False)  # Assuming the API returns a JSON with 'verified' key
-    else:
-        return False
+# Function to generate a random password
+def generate_password(length=8):
+    characters = string.ascii_letters + string.digits + string.punctuation
+    return ''.join(random.choice(characters) for i in range(length))
 
 # Route to insert a new NGO
 @app.route('/add_ngo', methods=['POST'])
 def add_ngo():
     try:
         details = request.json
-        # Verify the license number before inserting
-        if not verify_license(details['LicenseNumber']):
-            return "License number is not verified!", 400
-        
+        # Check for duplicate email
         cursor = mysql.connection.cursor()
-        query = '''
-            INSERT INTO NGO (LicenseNumber, NGOName, ChairmanName, YearOfEstablishment, Email, PhoneNumber, AmountDonated, Priority, Volunteers)
-            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
-        '''
-        cursor.execute(query, (details['LicenseNumber'], details['NGOName'], details['ChairmanName'],
-                               details['YearOfEstablishment'], details['Email'], details['PhoneNumber'],
-                               details['AmountDonated'], details['Priority'], details['Volunteers']))
+        cursor.execute("SELECT * FROM NGO WHERE Email = %s", (details['Email'],))
+        if cursor.fetchone() is not None:
+            return jsonify({'error': 'Email already registered! Please log in.'}), 400
+        
+        # Generate random password
+        password = generate_password()
+
+        # Insert the new NGO into the database
+        cursor.execute('''
+            INSERT INTO NGO (LicenseNumber, NGOName, ChairmanName, YearOfEstablishment, Email, PhoneNumber, AmountDonated, Priority, Volunteers, Password)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+        ''', (details['LicenseNumber'], details['NGOName'], details['ChairmanName'],
+              details['YearOfEstablishment'], details['Email'], details['PhoneNumber'],
+              details['AmountDonated'], details['Priority'], details['Volunteers'], password))
+        
         mysql.connection.commit()
         cursor.close()
-        return 'NGO added successfully!', 201
+
+        return jsonify({'message': 'NGO added successfully!', 'Password': password}), 201
     except MySQLdb.Error as e:
-        return f"Error adding NGO: {e}"
+        return jsonify({'error': f"Error adding NGO: {e}"}), 400
 
 # Route to update an existing NGO by ID
 @app.route('/update_ngo/<int:id>', methods=['PUT'])

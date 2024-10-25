@@ -24,8 +24,12 @@ def create_donations_table():
             CREATE TABLE IF NOT EXISTS Donations (
                 DonationID INT AUTO_INCREMENT PRIMARY KEY,
                 Amount DECIMAL(10, 2),
-                DonationDate DATE
-            );
+                DonationDate DATE,
+                DonorID  intDonorID   ,
+                Amount int,
+                foreign key (Amount) references Bank_bill(Amount),       
+                #foreign key(DonorID) references Donor(DonorId)       
+           );
         ''')
         mysql.connection.commit()
         cursor.close()
@@ -98,5 +102,5 @@ def get_donations():
     except MySQLdb.Error as e:
         return f"Error fetching donations: {e}"
 
-if __name__ == '__main__':
+if __name__ == '_main_':
     app.run(debug=True)

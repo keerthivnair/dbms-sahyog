@@ -1,0 +1,95 @@
+/* src/components/Navbar.css */
+
+.navbar {
+  background-color: #003366; /* Dark blue background for navbar */
+  padding: 10px;
+  color: white; /* Text color */
+  display: flex; /* Use flexbox for layout */
+  align-items: center; /* Center items vertically */
+  position: relative; /* For positioning the popup */
+}
+
+.navbar ul {
+  list-style-type: none; /* Remove bullets */
+  margin: 0;
+  padding: 0;
+  display: flex; /* Horizontally align items */
+  flex-grow: 1; /* Allow navbar to expand */
+}
+
+.navbar li {
+  margin-right: 20px; /* Spacing between links */
+}
+
+.about-link {
+  text-decoration: none; /* Remove underline */
+  color: white; /* Link color */
+  transition: color 0.3s; /* Smooth color change on hover */
+}
+
+.about-link:hover {
+  color: #ffcc00; /* Change color on hover */
+}
+
+/* Scrolling Text Styling */
+.scrolling-text {
+  white-space: nowrap; /* Prevent line breaks */
+  overflow: hidden; /* Hide overflow */
+  position: relative; /* For absolute positioning of items */
+  flex-grow: 2; /* Allow scrolling text to take up space */
+}
+
+.scroll-item {
+  display: inline-block; /* Ensure items are inline */
+  padding: 10px;
+  animation: scroll 11s linear infinite; /* Apply animation */
+}
+
+@keyframes scroll {
+  0% {
+    transform: translateX(100%); /* Start from the right */
+  }
+  100% {
+    transform: translateX(-100%); /* End at the left */
+  }
+}
+
+/* About pop-up styling */
+.about-side-popup {
+  position: absolute; /* Position it over the navbar */
+  top: 50%; /* Center vertically */
+  left: 100%; /* Position it outside of the navbar */
+  transform: translateY(-50%); /* Adjust position */
+  background-color: white; /* Background color */
+  color: black; /* Text color */
+  border: 1px solid #003366; /* Border */
+  padding: 10px; /* Padding */
+  border-radius: 8px; /* Rounded corners */
+  z-index: 100; /* Ensure it stays on top */
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .navbar {
+    flex-direction: column; /* Stack items vertically */
+  }
+
+  .navbar ul {
+    flex-direction: column; /* Stack nav items */
+    align-items: center; /* Center items */
+  }
+
+  .scrolling-text {
+    margin-top: 10px; /* Add space above scrolling text */
+  }
+}
+
+@media (max-width: 480px) {
+  .navbar li {
+    margin-right: 10px; /* Less margin on smaller screens */
+  }
+
+  .about-side-popup {
+    left: 0; /* Align popup for smaller screens */
+  }
+}

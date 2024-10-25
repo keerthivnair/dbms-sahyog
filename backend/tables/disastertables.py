@@ -19,13 +19,15 @@ def create_disaster_table():
     try:
         cursor = mysql.connection.cursor()
         # SQL query to create the Disaster table
+
+        #change the primary key*****
         cursor.execute('''
             CREATE TABLE IF NOT EXISTS Disaster (
                 DisasterID INT AUTO_INCREMENT PRIMARY KEY,
                 DisasterType VARCHAR(255),
                 SeverityLevel INT,
                 StartDate DATE,
-                EndDate DATE
+                **EndDate DATE
             );
         ''')
         mysql.connection.commit()
@@ -91,5 +93,5 @@ def delete_disaster(id):
     except MySQLdb.Error as e:
         return f"Error deleting disaster record: {e}"
 
-if __name__ == '__main__':
+if __name__ == '_main_':
     app.run(debug=True)

@@ -22,12 +22,15 @@ def create_camp_table():
             CampID INT AUTO_INCREMENT PRIMARY KEY,
             CampName VARCHAR(255) NOT NULL,
             Capacity INT NOT NULL,
-            VolunteerReq INT NOT NULL,
-            VolunteerAvail INT NOT NULL,
+           * VolunteerReq INT NOT NULL,
+           * VolunteerAvail INT NOT NULL,
             FundReq VARCHAR(50),
             FundAvail VARCHAR(50),
-            Volunteersroutedbysahyog INT
-            
+            Volunteersroutedbysahyog INT,
+            VolunteerID int,
+            LocationID  int,  
+            ##foreign key(VolunteerID) references Volunteers(VolunteerID),
+            ##foreign key(LocationID) references Location(LocationID)       
         );
     ''')
     mysql.connection.commit()
@@ -96,5 +99,5 @@ def delete_camp(id):
     cursor.close()
     return jsonify(message='Camp deleted successfully!')
 
-if __name__ == '__main__':
+if __name__ == '_main_':
     app.run(debug=True)
