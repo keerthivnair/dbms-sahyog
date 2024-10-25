@@ -24,7 +24,9 @@ def create_resources_table():
                 ResourceID INT AUTO_INCREMENT PRIMARY KEY,
                 ResourceName VARCHAR(255),
                 QuantityReq INT,
-                QuantityAvail INT
+                QuantityAvail INT,
+                CampID int,
+                foreign key(CampID) references Camp(CampID)       
             );
         ''')
         mysql.connection.commit()
@@ -97,5 +99,5 @@ def delete_resource(resource_id):
     except MySQLdb.Error as e:
         return jsonify({'error': f"Error deleting resource: {e}"}), 400
 
-if __name__ == '__main__':
+if __name__ == '_main_':
     app.run(debug=True)

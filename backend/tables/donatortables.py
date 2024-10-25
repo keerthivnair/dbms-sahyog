@@ -26,6 +26,8 @@ def create_donor_table():
                 ContactNumber VARCHAR(15),
                 Email VARCHAR(255),
                 Address VARCHAR(255)
+                ResourceID INT    
+                #foreign key(ResourceID) references Resources(ResourceID)       
             )
         ''')
         mysql.connection.commit()
@@ -93,5 +95,5 @@ def get_donors():
     except MySQLdb.Error as e:
         return f"Error fetching donors: {e}"
 
-if __name__ == '__main__':
+if __name__ == '_main_':
     app.run(debug=True)

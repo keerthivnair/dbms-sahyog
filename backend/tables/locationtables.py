@@ -90,5 +90,5 @@ def get_locations():
     except MySQLdb.Error as e:
         return f"Error fetching locations: {e}"
 
-if __name__ == '__main__':
+if __name__ == '_main_':
     app.run(debug=True)

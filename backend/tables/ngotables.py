@@ -1,125 +1,94 @@
 from flask import Flask, request, jsonify
 from flask_mysqldb import MySQL
 import MySQLdb.cursors
-import requests
-import string
-import random
 
 app = Flask(__name__)
 
 # MySQL Configuration
 app.config['MYSQL_HOST'] = 'localhost'
-app.config['MYSQL_USER'] = 'root'  # Replace with your MySQL username
-app.config['MYSQL_PASSWORD'] = 'keerthi2005@'  # Replace with your MySQL password
-app.config['MYSQL_DB'] = 'sahyogdb'  # Replace with your MySQL database name
+app.config['MYSQL_USER'] = 'root'
+app.config['MYSQL_PASSWORD'] = 'keerthi2005@'
+app.config['MYSQL_DB'] = 'sahyogdb'
 
 # Initialize MySQL
 mysql = MySQL(app)
 
-# Route to create the NGO table
-@app.route('/create_ngo_table', methods=['GET'])
-def create_ngo_table():
+# Route to create the Location table
+@app.route('/create_location_table', methods=['GET'])
+def create_location_table():
     try:
         cursor = mysql.connection.cursor()
+        # SQL query to create the Location table
         cursor.execute('''
-            CREATE TABLE IF NOT EXISTS NGO (
-                NGOID INT AUTO_INCREMENT PRIMARY KEY,
-                LicenseNumber VARCHAR(255),
-                NGOName VARCHAR(255) NOT NULL,
-                ChairmanName VARCHAR(255),
-                YearOfEstablishment YEAR,
-                Email VARCHAR(255),
-                PhoneNumber VARCHAR(15),
-                AmountDonated DECIMAL(10, 2),
-                Priority INT,
-                Volunteers INT,
-                Password VARCHAR(255)
+            CREATE TABLE IF NOT EXISTS Location (
+                LocationID INT AUTO_INCREMENT PRIMARY KEY,
+                LocationName VARCHAR(255)
             );
         ''')
         mysql.connection.commit()
         cursor.close()
-        return 'NGO table created successfully!'
+        return 'Location table created successfully!'
     except MySQLdb.Error as e:
-        return f"Error creating NGO table: {e}"
+        return f"Error creating Location table: {e}"
 
-# Function to generate a random password
-def generate_password(length=8):
-    characters = string.ascii_letters + string.digits + string.punctuation
-    return ''.join(random.choice(characters) for i in range(length))
-
-# Route to insert a new NGO
-@app.route('/add_ngo', methods=['POST'])
-def add_ngo():
+# Route to add a new location
+@app.route('/add_location', methods=['POST'])
+def add_location():
+    data = request.json
     try:
-        details = request.json
-        # Check for duplicate email
         cursor = mysql.connection.cursor()
-        cursor.execute("SELECT * FROM NGO WHERE Email = %s", (details['Email'],))
-        if cursor.fetchone() is not None:
-            return jsonify({'error': 'Email already registered! Please log in.'}), 400
-        
-        # Generate random password
-        password = generate_password()
-
-        # Insert the new NGO into the database
         cursor.execute('''
-            INSERT INTO NGO (LicenseNumber, NGOName, ChairmanName, YearOfEstablishment, Email, PhoneNumber, AmountDonated, Priority, Volunteers, Password)
-            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
-        ''', (details['LicenseNumber'], details['NGOName'], details['ChairmanName'],
-              details['YearOfEstablishment'], details['Email'], details['PhoneNumber'],
-              details['AmountDonated'], details['Priority'], details['Volunteers'], password))
-        
+            INSERT INTO Location (LocationName)
+            VALUES (%s);
+        ''', (data['LocationName'],))
         mysql.connection.commit()
         cursor.close()
-
-        return jsonify({'message': 'NGO added successfully!', 'Password': password}), 201
+        return 'Location added successfully!'
     except MySQLdb.Error as e:
-        return jsonify({'error': f"Error adding NGO: {e}"}), 400
+        return f"Error adding location: {e}"
 
-# Route to update an existing NGO by ID
-@app.route('/update_ngo/<int:id>', methods=['PUT'])
-def update_ngo(id):
+# Route to update a location
+@app.route('/update_location/<int:location_id>', methods=['PUT'])
+def update_location(location_id):
+    data = request.json
     try:
         cursor = mysql.connection.cursor()
-        details = request.json
-        query = '''
-            UPDATE NGO
-            SET LicenseNumber = %s, NGOName = %s, ChairmanName = %s, YearOfEstablishment = %s,
-                Email = %s, PhoneNumber = %s, AmountDonated = %s, Priority = %s, Volunteers = %s
-            WHERE NGOID = %s
-        '''
-        cursor.execute(query, (details['LicenseNumber'], details['NGOName'], details['ChairmanName'],
-                               details['YearOfEstablishment'], details['Email'], details['PhoneNumber'],
-                               details['AmountDonated'], details['Priority'], details['Volunteers'], id))
+        cursor.execute('''
+            UPDATE Location
+            SET LocationName = %s
+            WHERE LocationID = %s;
+        ''', (data['LocationName'], location_id))
         mysql.connection.commit()
         cursor.close()
-        return f"NGO with ID {id} updated successfully!"
+        return 'Location updated successfully!'
     except MySQLdb.Error as e:
-        return f"Error updating NGO: {e}"
+        return f"Error updating location: {e}"
 
-# Route to delete an NGO by ID
-@app.route('/delete_ngo/<int:id>', methods=['DELETE'])
-def delete_ngo(id):
+# Route to delete a location
+@app.route('/delete_location/<int:location_id>', methods=['DELETE'])
+def delete_location(location_id):
     try:
         cursor = mysql.connection.cursor()
-        cursor.execute('DELETE FROM NGO WHERE NGOID = %s', (id,))
+        cursor.execute('''
+            DELETE FROM Location WHERE LocationID = %s;
+        ''', (location_id,))
         mysql.connection.commit()
         cursor.close()
-        return f"NGO with ID {id} deleted successfully!"
+        return 'Location deleted successfully!'
     except MySQLdb.Error as e:
-        return f"Error deleting NGO: {e}"
+        return f"Error deleting location: {e}"
 
-# Route to fetch all NGOs
-@app.route('/get_ngos', methods=['GET'])
-def get_ngos():
+# Route to get all locations
+@app.route('/get_locations', methods=['GET'])
+def get_locations():
     try:
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-        cursor.execute('SELECT * FROM NGO')
-        ngos = cursor.fetchall()
+        cursor.execute('SELECT * FROM Location')
+        locations = cursor.fetchall()
         cursor.close()
-        return jsonify(ngos)
+        return jsonify(locations)
     except MySQLdb.Error as e:
-        return f"Error fetching NGOs: {e}"
+        return f"Error fetching locations: {e}"
 
-if __name__ == '__main__':
+if __name__ == '_main_':
     app.run(debug=True)

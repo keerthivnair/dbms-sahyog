@@ -25,7 +25,23 @@ def create_report_table():
             CREATE TABLE IF NOT EXISTS Report (
                 ReportID INT AUTO_INCREMENT PRIMARY KEY,
                 ReportDate DATE,
-                ReportDetails TEXT
+                ReportDetails TEXT,
+                ResourceID INT,
+                DonationID INT,
+                LocationID INT,
+                DonorID INT,
+                DisasterID INT,
+                CampID INT ,   
+                Volunteers_req INT,
+                Volunteers_avail INT, 
+                foreign key (VolunteerID) references Camp(Volunteers_avail),
+                foreign key (Volunteer_req) references Camp(Volunteers_req),       
+                #foreign key (ResourceID) references Resources(ResourceID),
+                #foreign key(DonationID) references Donations(DonationID),
+                #foreign key(LocationID) references Location (LocationID),
+                #foreign key(DonorID) references Donor(DonorID),
+                #foreign key(DisasterID) references Disaster(DisasterID),   
+                #foreign key(CampID) references Camp(CampID)   
             );
         ''')
         mysql.connection.commit()
@@ -95,5 +111,5 @@ def delete_report(report_id):
     except MySQLdb.Error as e:
         return jsonify({'error': f"Error deleting report: {e}"}), 400
 
-if __name__ == '__main__':
+if __name__ == '_main_':
     app.run(debug=True)

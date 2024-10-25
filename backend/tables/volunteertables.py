@@ -1,11 +1,8 @@
 from flask import Flask, request, jsonify
 from flask_mysqldb import MySQL
 import MySQLdb.cursors
-import string, random
-from flask_cors import CORS
 
 app = Flask(__name__)
-CORS(app)
 
 # MySQL Configuration
 app.config['MYSQL_HOST'] = 'localhost'
@@ -26,17 +23,16 @@ def create_volunteers_table():
             CREATE TABLE IF NOT EXISTS Volunteers (
                 VolunteerID INT AUTO_INCREMENT PRIMARY KEY,
                 VolunteerName VARCHAR(255) NOT NULL,
-                VolunteerEmail VARCHAR(255) UNIQUE,
+                VolunteerEmail VARCHAR(255),
                 Gender ENUM('Male', 'Female', 'Other'),
                 Age INT,
                 PlaceOfStay VARCHAR(255),
                 LanguagesKnown VARCHAR(255),
-                PreviousExperience TEXT,
-                Height DECIMAL(5, 2),  -- In meters
-                Weight DECIMAL(5, 2),  -- In kilograms
-                BMI DECIMAL(5, 2) AS (Weight / (Height * Height)) STORED,  -- Calculated BMI field
-                EducationalQualification VARCHAR(255),
-                Password VARCHAR(255) NOT NULL
+                *PreviousExperience TEXT,
+                *Height DECIMAL(5, 2),  -- In meters
+                *Weight DECIMAL(5, 2),  -- In kilograms
+                *BMI DECIMAL(5, 2) AS (Weight / (Height * Height)) STORED,  -- Calculated BMI field
+                *EducationalQualification VARCHAR(255)
             );
         ''')
         mysql.connection.commit()
@@ -45,40 +41,22 @@ def create_volunteers_table():
     except MySQLdb.Error as e:
         return f"Error creating Volunteers table: {e}"
 
-def generate_password(length=8):
-    characters = string.ascii_letters + string.digits + string.punctuation
-    return ''.join(random.choice(characters) for i in range(length))
-
 # Route to add a new volunteer
 @app.route('/add_volunteer', methods=['POST'])
 def add_volunteer():
     data = request.json
     try:
         cursor = mysql.connection.cursor()
-        
-        # Check for existing email
-        cursor.execute("SELECT * FROM Volunteers WHERE VolunteerEmail = %s", (data['VolunteerEmail'],))
-        if cursor.fetchone() is not None:
-            return jsonify({'error': 'Email already registered!'}), 400
-        
-        # Generate password
-        password = generate_password()
-
-        # Insert volunteer data
         cursor.execute('''
             INSERT INTO Volunteers (VolunteerName, VolunteerEmail, Gender, Age, PlaceOfStay,
-                                    LanguagesKnown, PreviousExperience, Height, Weight, EducationalQualification, Password)
-            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                                    LanguagesKnown, PreviousExperience, Height, Weight, EducationalQualification)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
         ''', (data['VolunteerName'], data['VolunteerEmail'], data['Gender'], data['Age'],
               data['PlaceOfStay'], data['LanguagesKnown'], data['PreviousExperience'],
-              data['Height'], data['Weight'], data['EducationalQualification'], password))
+              data['Height'], data['Weight'], data['EducationalQualification']))
         mysql.connection.commit()
         cursor.close()
-        return jsonify({
-            'message': 'Registration successful!',
-            'email': data['VolunteerEmail'],
-            'password': password
-        }), 201
+        return jsonify({'message': 'Volunteer added successfully!'}), 201
     except MySQLdb.Error as e:
         return jsonify({'error': f"Error adding volunteer: {e}"}), 400
 
@@ -147,5 +125,5 @@ def delete_volunteer(volunteer_id):
     except MySQLdb.Error as e:
         return jsonify({'error': f"Error deleting volunteer: {e}"}), 400
 
-if __name__ == '__main__':
+if __name__ == '_main_':
     app.run(debug=True)
