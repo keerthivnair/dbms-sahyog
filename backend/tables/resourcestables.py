@@ -7,7 +7,7 @@ app = Flask(__name__)
 # MySQL Configuration
 app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'root'  # Replace with your MySQL username
-app.config['MYSQL_PASSWORD'] = 'keerthi2005@'  # Replace with your MySQL password
+app.config['MYSQL_PASSWORD'] = 'Ashmi@2004'  # Replace with your MySQL password
 app.config['MYSQL_DB'] = 'sahyogdb'  # Replace with your MySQL database name
 
 # Initialize MySQL
@@ -21,13 +21,13 @@ def create_resources_table():
         # SQL query to create the Resources table
         cursor.execute('''
             CREATE TABLE IF NOT EXISTS Resources (
-                ResourceID INT AUTO_INCREMENT PRIMARY KEY,
-                ResourceName VARCHAR(255),
-                QuantityReq INT,
-                QuantityAvail INT,
-                CampID int,
-                foreign key(CampID) references Camp(CampID)       
-            );
+    ResourceID INT AUTO_INCREMENT PRIMARY KEY,
+    ResourceName VARCHAR(255),
+    QuantityReq INT,
+    QuantityAvail INT,
+    CampID INT,
+    FOREIGN KEY (CampID) REFERENCES Camp(CampID)
+);
         ''')
         mysql.connection.commit()
         cursor.close()

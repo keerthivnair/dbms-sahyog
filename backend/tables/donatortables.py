@@ -7,7 +7,7 @@ app = Flask(__name__)
 # MySQL Configuration
 app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'root'
-app.config['MYSQL_PASSWORD'] = 'keerthi2005@'
+app.config['MYSQL_PASSWORD'] = 'Ashmi@2004'
 app.config['MYSQL_DB'] = 'sahyogdb'
 
 # Initialize MySQL
@@ -20,15 +20,15 @@ def create_donor_table():
         cursor = mysql.connection.cursor()
         # SQL query to create the Donor table
         cursor.execute('''
-            CREATE TABLE IF NOT EXISTS Donor (
-                DonorID INT AUTO_INCREMENT PRIMARY KEY,
-                Name VARCHAR(255) NOT NULL,
-                ContactNumber VARCHAR(15),
-                Email VARCHAR(255),
-                Address VARCHAR(255)
-                ResourceID INT    
-                #foreign key(ResourceID) references Resources(ResourceID)       
-            )
+           CREATE TABLE IF NOT EXISTS Donor (
+    DonorID INT AUTO_INCREMENT PRIMARY KEY,
+    Name VARCHAR(255) NOT NULL,
+    ContactNumber VARCHAR(15),
+    Email VARCHAR(255),
+    Address VARCHAR(255),
+    ResourceID INT,
+    FOREIGN KEY (ResourceID) REFERENCES Resources(ResourceID)
+);
         ''')
         mysql.connection.commit()
         cursor.close()
