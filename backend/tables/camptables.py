@@ -34,20 +34,6 @@ def create_camp_table():
             LocationID INT,
             FOREIGN KEY(LocationID) REFERENCES Location(LocationID)
         );
-       CREATE TABLE IF NOT EXISTS Camp (
-    CampID INT AUTO_INCREMENT PRIMARY KEY,
-    CampName VARCHAR(255) NOT NULL,
-    Capacity INT NOT NULL,
-    VolunteerReq INT NOT NULL,
-    VolunteerAvail INT NOT NULL,
-    FundReq VARCHAR(50),
-    FundAvail VARCHAR(50),
-    VolunteersRoutedBySahyog INT,
-    VolunteerID INT,
-    LocationID INT,
-    FOREIGN KEY (VolunteerID) REFERENCES Volunteers(VolunteerID),
-    FOREIGN KEY (LocationID) REFERENCES Location(LocationID)
-);
 
     ''')
     mysql.connection.commit()
