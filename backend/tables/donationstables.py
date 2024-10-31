@@ -8,7 +8,7 @@ app = Flask(__name__)
 # MySQL Configuration
 app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'root'
-app.config['MYSQL_PASSWORD'] = 'keerthi2005@'
+app.config['MYSQL_PASSWORD'] = 'Ashmi@2004'
 app.config['MYSQL_DB'] = 'sahyogdb'
 
 # Initialize MySQL
@@ -22,14 +22,12 @@ def create_donations_table():
         # SQL query to create the Donations table
         cursor.execute('''
             CREATE TABLE IF NOT EXISTS Donations (
-                DonationID INT AUTO_INCREMENT PRIMARY KEY,
-                Amount DECIMAL(10, 2),
-                DonationDate DATE,
-                DonorID  intDonorID   ,
-                Amount int,
-                foreign key (Amount) references Bank_bill(Amount),       
-                #foreign key(DonorID) references Donor(DonorId)       
-           );
+    DonationID INT AUTO_INCREMENT PRIMARY KEY,
+    Amount DECIMAL(10, 2),
+    DonationDate DATE,
+    DonorID INT,
+    FOREIGN KEY (DonorID) REFERENCES Donor(DonorID)
+);
         ''')
         mysql.connection.commit()
         cursor.close()

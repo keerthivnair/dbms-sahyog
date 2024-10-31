@@ -7,7 +7,7 @@ app = Flask(__name__)
 # MySQL Configuration
 app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'root'
-app.config['MYSQL_PASSWORD'] = 'keerthi2005@'
+app.config['MYSQL_PASSWORD'] = 'Ashmi@2004'
 app.config['MYSQL_DB'] = 'sahyogdb'
 
 # Initialize MySQL
@@ -20,10 +20,10 @@ def create_location_table():
         cursor = mysql.connection.cursor()
         # SQL query to create the Location table
         cursor.execute('''
-            CREATE TABLE IF NOT EXISTS Location (
-                LocationID INT AUTO_INCREMENT PRIMARY KEY,
-                LocationName VARCHAR(255)
-            );
+           CREATE TABLE IF NOT EXISTS Location (
+    LocationID INT AUTO_INCREMENT PRIMARY KEY,
+    LocationName VARCHAR(255)
+);
         ''')
         mysql.connection.commit()
         cursor.close()
