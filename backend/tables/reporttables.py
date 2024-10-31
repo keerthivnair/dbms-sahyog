@@ -111,5 +111,5 @@ def delete_report(report_id):
     except MySQLdb.Error as e:
         return jsonify({'error': f"Error deleting report: {e}"}), 400
 
-if __name__ == '_main_':
+if __name__ == '__main__':
     app.run(debug=True)

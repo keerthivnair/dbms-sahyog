@@ -1,7 +1,7 @@
 from flask import Flask, request, jsonify
 from flask_mysqldb import MySQL
 import MySQLdb.cursors
-from MySQLdb import Error  # Import Error class
+from MySQLdb import Error  
 
 app = Flask(__name__)
 

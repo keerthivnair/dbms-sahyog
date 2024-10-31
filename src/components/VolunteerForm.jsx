@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import './VolunteerForm.css'
 
 const VolunteerForm = () => {
   const [formData, setFormData] = useState({
@@ -12,6 +13,7 @@ const VolunteerForm = () => {
     Height: '',
     Weight: '',
     EducationalQualification: '',
+    Password: ''
   });
 
   const [response, setResponse] = useState(null);
@@ -19,8 +21,8 @@ const VolunteerForm = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prevData) => ({
-      ...prevData,
+    setFormData((formData) => ({
+      ...formData,
       [name]: value,
     }));
   };
@@ -149,6 +151,14 @@ const VolunteerForm = () => {
           placeholder="Educational Qualification" 
           required 
         />
+        <input 
+          name="Password" 
+          type="password" 
+          value={formData.Password} 
+          onChange={handleChange} 
+          placeholder="Password" 
+          required 
+        />
         <button type="submit" disabled={loading}>
           {loading ? 'Submitting...' : 'Register'}
         </button>
@@ -159,7 +169,7 @@ const VolunteerForm = () => {
           {response.error ? (
             <p style={{ color: 'red' }}>{response.error}</p>
           ) : (
-            <p style={{ color: 'green' }}>Registered successfully! Your password is: {response.password}</p>
+            <p style={{ color: 'green' }}>Registered successfully! Your password is: {response.Password}</p>
           )}
         </div>
       )}

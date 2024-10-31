@@ -10,6 +10,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'; // Im
 import "slick-carousel/slick/slick.css"; 
 import "slick-carousel/slick/slick-theme.css"; 
 import VolunteerForm from './components/VolunteerForm';
+import CampForm from './components/Campform';
 
 function App() {
  return (
@@ -25,6 +26,7 @@ function App() {
          {/* Register Page Route */}
          <Route path="/register" element={<Register />} />
          <Route path="/volunteer" element={<VolunteerForm/>} />
+         <Route path="/camp" element={<CampForm/>} />
        </Routes>
     
        <Footer />

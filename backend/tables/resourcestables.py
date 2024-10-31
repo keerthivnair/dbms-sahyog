@@ -23,10 +23,7 @@ def create_resources_table():
             CREATE TABLE IF NOT EXISTS Resources (
                 ResourceID INT AUTO_INCREMENT PRIMARY KEY,
                 ResourceName VARCHAR(255),
-                QuantityReq INT,
-                QuantityAvail INT,
-                CampID int,
-                foreign key(CampID) references Camp(CampID)       
+                QuantityAvail INT
             );
         ''')
         mysql.connection.commit()
@@ -34,6 +31,28 @@ def create_resources_table():
         return 'Resources table created successfully!'
     except MySQLdb.Error as e:
         return f"Error creating Resources table: {e}"
+    
+# Route to get the id of a particular location id
+@app.route('/get_resource_id', methods=['POST']) 
+def get_resource_id():
+    data = request.json 
+    resource_name = data.get('resource_name')  # Get resource_name from the request data
+    if not resource_name:
+        return jsonify({'error': 'Resource name is required!'}), 400
+    
+    try:
+        cursor = mysql.connection.cursor()
+        cursor.execute('SELECT ResourceID FROM resources WHERE ResourceName = %s;', (resource_name,))
+        resource_id = cursor.fetchone()  # Fetch the result
+        cursor.close()
+        
+        if resource_id:
+            return jsonify({'ResourceID': resource_id[0]}), 200  # Return the ResourceID
+        else:
+            return jsonify({'message': 'Resource not found.'}), 404  # Handle case when resource is not found
+    except MySQLdb.Error as e:
+        return jsonify({'error': f"Error retrieving resource ID: {e}"}), 400
+
 
 # Route to add a new resource
 @app.route('/add_resource', methods=['POST'])
@@ -62,25 +81,22 @@ def get_resources():
         resources.append({
             'ResourceID': row[0],
             'ResourceName': row[1],
-            'QuantityReq': row[2],
-            'QuantityAvail': row[3]
+            'QuantityAvail': row[2]
         })
     cursor.close()
     return jsonify(resources)
 
 # Route to update a resource
-@app.route('/update_resource/<int:resource_id>', methods=['PUT'])
-def update_resource(resource_id):
+@app.route('/update_resource/<resource_name>', methods=['PUT'])
+def update_resource(resource_name):
     data = request.json
     try:
         cursor = mysql.connection.cursor()
         cursor.execute('''
             UPDATE Resources
-            SET ResourceName = %s,
-                QuantityReq = %s,
-                QuantityAvail = %s
-            WHERE ResourceID = %s
-        ''', (data['ResourceName'], data['QuantityReq'], data['QuantityAvail'], resource_id))
+            SET QuantityAvail = %s
+            WHERE ResourceName = %s
+        ''', ( data['QuantityAvail'], resource_name))
         mysql.connection.commit()
         cursor.close()
         return jsonify({'message': 'Resource updated successfully!'})
@@ -88,11 +104,11 @@ def update_resource(resource_id):
         return jsonify({'error': f"Error updating resource: {e}"}), 400
 
 # Route to delete a resource
-@app.route('/delete_resource/<int:resource_id>', methods=['DELETE'])
-def delete_resource(resource_id):
+@app.route('/delete_resource/<resource_name>', methods=['DELETE'])
+def delete_resource(resource_name):
     try:
         cursor = mysql.connection.cursor()
-        cursor.execute('DELETE FROM Resources WHERE ResourceID = %s;', (resource_id,))
+        cursor.execute('DELETE FROM Resources WHERE ResourceName = %s;', (resource_name,))
         mysql.connection.commit()
         cursor.close()
         return jsonify({'message': 'Resource deleted successfully!'})
