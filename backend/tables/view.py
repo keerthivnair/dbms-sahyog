@@ -15,7 +15,7 @@ app.config['MYSQL_DB'] = 'sahyogdb'  # Replace with your database name
 mysql = MySQL(app)
 
 # Route to fetch combined views in JSON format
-@app.route('/combined_views', methods=['GET'])
+@app.route('/combined_views', methods=['GET'] )
 def combined_views():
     mycursor = mysql.connection.cursor()
     combined_data = {}
