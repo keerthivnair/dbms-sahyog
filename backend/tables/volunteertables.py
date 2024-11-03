@@ -1,6 +1,8 @@
 from flask import Flask, request, jsonify
 from flask_mysqldb import MySQL
 from flask_cors import CORS
+from werkzeug.utils import secure_filename
+import os
 
 app = Flask(__name__)
 CORS(app)
@@ -42,6 +44,24 @@ def create_volunteers_table():
         return 'Volunteers table created successfully!'
     except Exception as e:
         return f"Error creating Volunteers table: {e}"
+    
+
+# Login route for volunteers
+@app.route('/volunteer_login', methods=['POST'])
+def volunteer_login():
+    data = request.json
+    name = data['VolunteerName']
+    password = data['Password']
+
+    cursor = mysql.connection.cursor()
+    cursor.execute('SELECT * FROM Volunteers WHERE Name = %s AND Password = %s', (name, password))
+    volunteer = cursor.fetchone()
+    cursor.close()
+
+    if volunteer:
+        return jsonify({'success': True})
+    else:
+        return jsonify({'success': False, 'error': 'Invalid name or password.'}), 401 
 
 # Route to add a new volunteer
 @app.route('/add_volunteer', methods=['POST'])
@@ -97,6 +117,23 @@ def get_volunteers():
         })
     cursor.close()
     return jsonify(volunteers)
+# Function to get VolunteerID from Username
+@app.route('/get_volunteer_id', methods=['POST'])
+def get_volunteer_id():
+    data = request.json
+    username = data['VolunteerName']
+    password=data['Password']
+    
+    cursor = mysql.connection.cursor()
+    cursor.execute('SELECT VolunteerID FROM Volunteers WHERE VolunteerName = %s AND Password =%s', (username,password,))
+    volunteer = cursor.fetchone()
+    cursor.close()
+    
+    if volunteer:
+        return jsonify({'VolunteerID': volunteer['VolunteerID']})
+    else:
+        return jsonify({'error': 'Volunteer not found'}), 404
+
 
 @app.route('/volunteer/<username>/<password>',methods=['POST'])
 def get_volunteer(username,password):
@@ -116,7 +153,7 @@ def get_volunteer(username,password):
                 'LanguagesKnown': volunteer[6],
                 'PreviousExperience': volunteer[7],
                 'Height': volunteer[8],
-                'Weight': volunteer[9],
+                'Weight': volunteer[9], 
                 'BMI': volunteer[10],
                 'EducationalQualification': volunteer[11]
             })
@@ -181,5 +218,8 @@ def delete_volunteer(username, password):
         return jsonify({'message': 'Volunteer deleted successfully!'})
     except Exception as e:
         return jsonify({'error': f"Error deleting volunteer: {e}"}), 400
+    
+  
+
 if __name__ == '__main__':
     app.run(debug=True)

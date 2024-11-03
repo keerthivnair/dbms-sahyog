@@ -1,0 +1,59 @@
+.login-camp-container {
+    width: 100%;
+    max-width: 400px;
+    margin: 20px auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    background-color: #fff;
+  }
+  
+  .login-camp-container h2 {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  
+  .login-camp-container form {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .login-camp-container input {
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
+  }
+  
+  .login-camp-container input:focus {
+    border-color: #007bff;
+    outline: none;
+  }
+  
+  .login-camp-container button {
+    padding: 10px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    cursor: pointer;
+  }
+  
+  .login-camp-container button:hover {
+    background-color: #0056b3;
+  }
+  
+  .login-camp-container button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+  }
+  
+  .login-camp-container p {
+    text-align: center;
+    margin-top: 15px;
+    color: red;
+  }
+  

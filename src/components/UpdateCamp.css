@@ -1,0 +1,66 @@
+.update-camp-container {
+    width: 100%;
+    max-width: 500px;
+    margin: 20px auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    background-color: #fff;
+  }
+  
+  .update-camp-container h2 {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  
+  .update-camp-container form {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .update-camp-container input {
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
+  }
+  
+  .update-camp-container input:focus {
+    border-color: #007bff;
+    outline: none;
+  }
+  
+  .update-camp-container button {
+    padding: 10px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    cursor: pointer;
+  }
+  
+  .update-camp-container button:hover {
+    background-color: #0056b3;
+  }
+  
+  .update-camp-container button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+  }
+  
+  .update-camp-container p {
+    text-align: center;
+    margin-top: 15px;
+  }
+  
+  .update-camp-container p.error {
+    color: red;
+  }
+  
+  .update-camp-container p.success {
+    color: green;
+  }
+  

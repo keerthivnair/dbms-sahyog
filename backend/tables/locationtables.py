@@ -1,13 +1,15 @@
 from flask import Flask, request, jsonify
 from flask_mysqldb import MySQL
 import MySQLdb.cursors
+from flask_cors import CORS
 
 app = Flask(__name__)
+CORS(app)
 
 # MySQL Configuration
 app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'root'
-app.config['MYSQL_PASSWORD'] = 'Ashmi@2004'
+app.config['MYSQL_PASSWORD'] = 'keerthi2005@'
 app.config['MYSQL_DB'] = 'sahyogdb'
 
 # Initialize MySQL
@@ -21,8 +23,8 @@ def create_location_table():
         # SQL query to create the Location table
         cursor.execute('''
            CREATE TABLE IF NOT EXISTS Location (
-    LocationID INT AUTO_INCREMENT PRIMARY KEY,
-    LocationName VARCHAR(255)
+           LocationID INT AUTO_INCREMENT PRIMARY KEY,
+           LocationName VARCHAR(255)
 );
         ''')
         mysql.connection.commit()
@@ -30,6 +32,18 @@ def create_location_table():
         return 'Location table created successfully!'
     except MySQLdb.Error as e:
         return f"Error creating Location table: {e}"
+    
+
+def get_location_id(location_name):
+    try:
+        cursor = mysql.connection.cursor()
+        cursor.execute('SELECT LocationID FROM Location WHERE LocationName = %s', (location_name,))
+        location = cursor.fetchone()
+        cursor.close()
+        return location['LocationID'] if location else None
+    except MySQLdb.Error as e:
+        print(f"Error fetching LocationID: {e}")
+        return None
 
 # Route to add a new location
 @app.route('/add_location', methods=['POST'])
@@ -90,5 +104,5 @@ def get_locations():
     except MySQLdb.Error as e:
         return f"Error fetching locations: {e}"
 
-if __name__ == '_main_':
+if __name__ == '__main__':
     app.run(debug=True)

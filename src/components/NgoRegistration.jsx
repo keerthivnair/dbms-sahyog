@@ -1,75 +1,135 @@
+// NGORegistration.js
 import React, { useState } from 'react';
-import './NgoRegistration.css'; // You can create a CSS file for styles
+import axios from 'axios';
+import './NgoRegistration.css';
 
-const NgoRegistration = () => {
-    const [formData, setFormData] = useState({
-        LicenseNumber: '',
-        NGOName: '',
-        ChairmanName: '',
-        YearOfEstablishment: '',
-        Email: '',
-        PhoneNumber: '',
-        AmountDonated: '',
-        Priority: '',
-        Volunteers: '',
-    });
+const NGORegistration = () => {
+    const [licenseNumber, setLicenseNumber] = useState('');
+    const [ngoName, setNgoName] = useState('');
+    const [chairmanName, setChairmanName] = useState('');
+    const [yearOfEstablishment, setYearOfEstablishment] = useState('');
+    const [email, setEmail] = useState('');
+    const [phoneNumber, setPhoneNumber] = useState('');
+    const [isVerified, setIsVerified] = useState(false);
+    const [showRegistrationForm, setShowRegistrationForm] = useState(false);
     const [message, setMessage] = useState('');
-    const [password, setPassword] = useState('');
 
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setFormData({ ...formData, [name]: value });
-    };
-
-    const generateRandomPassword = () => {
-        const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-        let password = '';
-        for (let i = 0; i < 8; i++) {
-            password += characters.charAt(Math.floor(Math.random() * characters.length));
+    // Function to verify NGO
+    const verifyNGO = async () => {
+        try {
+            const response = await axios.post('/verify_ngo', { licenseNumber });
+            setMessage(response.data.message);
+            if (response.data.verified) {
+                setIsVerified(true);
+            }
+        } catch (error) {
+            setMessage('Verification failed. Please check the NGO name and license number.');
         }
-        return password;
     };
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        const generatedPassword = generateRandomPassword();
-        setPassword(generatedPassword);
-
-        const response = await fetch('http://localhost:5000/add_ngo', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ ...formData, Password: generatedPassword }),
-        });
-
-        if (response.ok) {
-            const data = await response.text();
-            setMessage(`Successfully registered! Your email: ${formData.Email}, Password: ${generatedPassword}`);
-        } else {
-            const error = await response.text();
-            setMessage(error);
+    // Function to submit the complete NGO registration form
+    const submitNGOForm = async () => {
+        try {
+            const data = { ngoName, licenseNumber, chairmanName, yearOfEstablishment, email, phoneNumber };
+            const response = await axios.post('/add_ngo', data);
+            setMessage(response.data.message);
+        } catch (error) {
+            setMessage('Error in NGO registration.');
         }
     };
 
     return (
-        <div className="ngo-registration">
-            <h2>NGO Registration</h2>
-            <form onSubmit={handleSubmit}>
-                <input type="text" name="LicenseNumber" placeholder="License Number" onChange={handleChange} required />
-                <input type="text" name="NGOName" placeholder="NGO Name" onChange={handleChange} required />
-                <input type="text" name="ChairmanName" placeholder="Chairman Name" onChange={handleChange} required />
-                <input type="number" name="YearOfEstablishment" placeholder="Year of Establishment" onChange={handleChange} required />
-                <input type="email" name="Email" placeholder="Email" onChange={handleChange} required />
-                <input type="text" name="PhoneNumber" placeholder="Phone Number" onChange={handleChange} required />
-                <input type="number" name="AmountDonated" placeholder="Amount Donated" onChange={handleChange} required />
-                <input type="number" name="Priority" placeholder="Priority" onChange={handleChange} required />
-                <input type="number" name="Volunteers" placeholder="Volunteers" onChange={handleChange} required />
-                <button type="submit">Register</button>
+        <div className="ngo-registration-container">
+            <h2 className="ngo-registration-title">NGO Registration</h2>
+
+            {message && <p className="ngo-registration-message">{message}</p>}
+
+            {/* Initial NGO Verification Form */}
+            <form className="ngo-verification-form">
+                <label className="form-label">
+                    NGO Name:
+                    <input
+                        className="form-input"
+                        type="text"
+                        value={ngoName}
+                        onChange={(e) => setNgoName(e.target.value)}
+                        required
+                    />
+                </label>
+                <label className="form-label">
+                    License Number:
+                    <input
+                        className="form-input"
+                        type="text"
+                        value={licenseNumber}
+                        onChange={(e) => setLicenseNumber(e.target.value)}
+                        required
+                    />
+                </label>
+                <button className="form-button" type="button" onClick={verifyNGO}>
+                    Verify
+                </button>
             </form>
-            {message && <p>{message}</p>}
+
+            {/* Show button to reveal full form if verification is successful */}
+            {isVerified && (
+                <div className="proceed-button-container">
+                    <button className="form-button" onClick={() => setShowRegistrationForm(true)}>
+                        Proceed to Full Registration
+                    </button>
+                </div>
+            )}
+
+            {/* Additional Registration Form (Hidden initially) */}
+            {showRegistrationForm && (
+                <form className="ngo-full-registration-form">
+                    <label className="form-label">
+                        Chairman Name:
+                        <input
+                            className="form-input"
+                            type="text"
+                            value={chairmanName}
+                            onChange={(e) => setChairmanName(e.target.value)}
+                            required
+                        />
+                    </label>
+                    <label className="form-label">
+                        Year of Establishment:
+                        <input
+                            className="form-input"
+                            type="number"
+                            value={yearOfEstablishment}
+                            onChange={(e) => setYearOfEstablishment(e.target.value)}
+                            required
+                        />
+                    </label>
+                    <label className="form-label">
+                        Email:
+                        <input
+                            className="form-input"
+                            type="email"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            required
+                        />
+                    </label>
+                    <label className="form-label">
+                        Phone Number:
+                        <input
+                            className="form-input"
+                            type="text"
+                            value={phoneNumber}
+                            onChange={(e) => setPhoneNumber(e.target.value)}
+                            required
+                        />
+                    </label>
+                    <button className="form-button" type="button" onClick={submitNGOForm}>
+                        Submit
+                    </button>
+                </form>
+            )}
         </div>
     );
 };
 
-export default NgoRegistration;
+export default NGORegistration;

@@ -11,6 +11,13 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css"; 
 import VolunteerForm from './components/VolunteerForm';
 import CampForm from './components/Campform';
+import VolunteerDetails from './components/VolunteerDetails';
+import Login from './components/Login';
+import VolunteerLogin from './components/Volunteerlogin';
+import CampLogin from './components/Camplogin';
+import UpdateCamp from './components/UpdateCamp';
+import CampOptions from './components/CampOptions';
+import NGORegistration from './components/NgoRegistration';
 
 function App() {
  return (
@@ -25,8 +32,16 @@ function App() {
          <Route path="/about" element={<About />} />
          {/* Register Page Route */}
          <Route path="/register" element={<Register />} />
+         <Route path="/login" element={<Login />} />
          <Route path="/volunteer" element={<VolunteerForm/>} />
          <Route path="/camp" element={<CampForm/>} />
+         <Route path="/ngo" element={<NGORegistration/>} />
+         <Route path="/volunteer-login" element={<VolunteerLogin/>} />
+         <Route path="/volunteer-details" element={<VolunteerDetails/>} />
+         <Route path="/camp-login" element={<CampLogin/>} />
+         <Route path="/camp-options" element={<CampOptions />} />
+         <Route path="/update-camp" element={<UpdateCamp />} />
+        
        </Routes>
     
        <Footer />
