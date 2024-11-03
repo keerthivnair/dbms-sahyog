@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NGO Login</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f7fa;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .login-page {
+            text-align: center;
+        }
+
+        .login-title {
+            color: #333;
+            font-size: 28px;
+            margin-bottom: 20px;
+        }
+
+        .login-boxes {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .login-box {
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 250px;
+            margin: 10px 0;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .login-box:hover {
+            transform: scale(1.05);
+        }
+
+        .login-box h2 {
+            color: #007bff;
+            font-size: 20px;
+            margin: 0;
+        }
+
+        #output {
+            margin-top: 20px;
+            text-align: left;
+            color: #333;
+        }
+
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-page">
+        <h1 class="login-title">NGO Login</h1>
+        <div class="login-boxes">
+            <div class="login-box" id="login-box">
+                <h2>Login</h2>
+                <input type="text" id="ngoId" placeholder="NGO ID" required>
+                <input type="text" id="username" placeholder="Username" required>
+                <input type="password" id="password" placeholder="Password" required>
+                <button onclick="login()">Login</button>
+                <p id="error-message" style="color: red;"></p>
+            </div>
+            <div class="login-box" id="dashboard" style="display: none;">
+                <h2>NGO Dashboard</h2>
+                <button onclick="showDonators()">View Donators</button>
+                <button onclick="showCamps()">View Camps</button>
+                <button onclick="showVolunteers()">View Volunteers</button>
+                <div id="output"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function login() {
+            const ngoId = document.getElementById('ngoId').value;
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const errorMessage = document.getElementById('error-message');
+
+            // Mock login validation (replace with actual validation logic)
+            if (ngoId === "123" && username === "ngoUser" && password === "password123") {
+                errorMessage.textContent = ''; // Clear previous error messages
+                document.getElementById('login-box').style.display = 'none';
+                document.getElementById('dashboard').style.display = 'block';
+            } else {
+                errorMessage.textContent = 'Incorrect NGO ID, Username, or Password.';
+            }
+        }
+
+        function showDonators() {
+            // Fetch and display Donator information from the database
+            document.getElementById('output').innerHTML = "<h3>Donator Info:</h3><p>List of Donators...</p>"; // Replace with actual data fetching logic
+        }
+
+        function showCamps() {
+            // Fetch and display Camp information from the database
+            document.getElementById('output').innerHTML = "<h3>Camp Info:</h3><p>List of Camps...</p>"; // Replace with actual data fetching logic
+        }
+
+        function showVolunteers() {
+            // Fetch and display Volunteer information from the database
+            document.getElementById('output').innerHTML = "<h3>Volunteer Info:</h3><p>List of Volunteers...</p>"; // Replace with actual data fetching logic
+        }
+    </script>
+</body>
+</html>
