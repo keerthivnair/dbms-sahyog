@@ -36,7 +36,7 @@ def create_location_table():
 
 def get_location_id(location_name):
     try:
-        cursor = mysql.connection.cursor()
+        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
         cursor.execute('SELECT LocationID FROM Location WHERE LocationName = %s', (location_name,))
         location = cursor.fetchone()
         cursor.close()
@@ -103,6 +103,11 @@ def get_locations():
         return jsonify(locations)
     except MySQLdb.Error as e:
         return f"Error fetching locations: {e}"
+    
+
+@app.route('/test', methods=['GET'])
+def test():
+    return 'Server is running!'
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, port=5000)

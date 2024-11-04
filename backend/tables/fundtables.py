@@ -43,8 +43,8 @@ def create_additional_tables():
                 IndividualDonorID INT,  -- Nullable foreign key
                 CompanyDonorID INT,     -- Nullable foreign key
                 FundDate DATE,
-                FOREIGN KEY (IndividualDonorID) REFERENCES IndividualDonor(DonorID),
-                FOREIGN KEY (CompanyDonorID) REFERENCES CompanyDonor(DonorID),
+                FOREIGN KEY (IndividualDonorID) REFERENCES IndividualDonor(IndividualDonorID),
+                FOREIGN KEY (CompanyDonorID) REFERENCES CompanyDonor(CompanyDonorID),
                 CHECK (IndividualDonorID IS NOT NULL OR CompanyDonorID IS NOT NULL)
             );
         ''')
@@ -77,90 +77,58 @@ def create_additional_tables():
         mysql.connection.rollback()
         return str(e), 500
 
-# Route to add funds
-@app.route('/add_funds', methods=['POST'])
-def add_funds():
+# Route to add funds from an individual donor
+@app.route('/add_funds_individual', methods=['POST'])
+def add_funds_individual():
     try:
         data = request.get_json()
-
+        
         fund_amount = data.get('FundAmount')
         fund_date = data.get('FundDate', date.today())
         individual_donor_id = data.get('IndividualDonorID')
-        company_donor_id = data.get('CompanyDonorID')
 
-        if not (individual_donor_id or company_donor_id):
-            return jsonify({"error": "At least one donor ID must be provided."}), 400
+        if not individual_donor_id:
+            return jsonify({"error": "IndividualDonorID must be provided for individual donations."}), 400
 
         cursor = mysql.connection.cursor()
         cursor.execute('''
-            INSERT INTO Funds (FundAmount, FundDate, IndividualDonorID, CompanyDonorID)
-            VALUES (%s, %s, %s, %s)
-        ''', (fund_amount, fund_date, individual_donor_id, company_donor_id))
+            INSERT INTO Funds (FundAmount, FundDate, IndividualDonorID)
+            VALUES (%s, %s, %s)
+        ''', (fund_amount, fund_date, individual_donor_id))
 
         mysql.connection.commit()
-        return jsonify({"message": "Funds added successfully!"}), 201
+        return jsonify({"message": "Funds from individual donor added successfully!"}), 201
 
     except MySQLdb.Error as e:
         return jsonify({"error": str(e)}), 500
     finally:
         cursor.close()
 
-# Function to distribute funds and send notifications
-def distribute_funds_and_notify():
+
+# Route to add funds from a company donor
+@app.route('/add_funds_company', methods=['POST'])
+def add_funds_company():
     try:
-        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+        data = request.get_json()
+        
+        fund_amount = data.get('FundAmount')
+        fund_date = data.get('FundDate', date.today())
+        company_donor_id = data.get('CompanyDonorID')
 
-        cursor.execute("SELECT SUM(FundAmount) AS total_funds FROM Funds")
-        total_funds_result = cursor.fetchone()
-        total_funds = total_funds_result['total_funds'] if total_funds_result['total_funds'] else 0
+        if not company_donor_id:
+            return jsonify({"error": "CompanyDonorID must be provided for company donations."}), 400
 
-        cursor.execute('SELECT * FROM NGO ORDER BY YearOfEstablishment ASC')
-        ngos = cursor.fetchall()
+        cursor = mysql.connection.cursor()
+        cursor.execute('''
+            INSERT INTO Funds (FundAmount, FundDate, CompanyDonorID)
+            VALUES (%s, %s, %s)
+        ''', (fund_amount, fund_date, company_donor_id))
 
-        MIN_AMOUNT_PER_NGO = 500
-        eligible_ngos = []
-        ngo_count = 0
-
-        for ngo in ngos:
-            if (ngo_count + 1) * MIN_AMOUNT_PER_NGO <= total_funds:
-                eligible_ngos.append(ngo)
-                ngo_count += 1
-            else:
-                break
-
-        if eligible_ngos:
-            amount_per_ngo = total_funds // ngo_count
-
-            for ngo in eligible_ngos:
-                ngo_id = ngo['NGOID']
-                ngo_email = ngo['Email']  # Assuming you have an Email column in your NGO table
-
-                # Insert distribution record
-                cursor.execute('''
-                    INSERT INTO NGOContribution (NGOID, ContributionAmount, ContributionDate)
-                    VALUES (%s, %s, CURDATE())
-                ''', (ngo_id, amount_per_ngo))
-
-                # Send email notification
-                msg = Message('Funds Distributed', recipients=[ngo_email])
-                msg.body = f"Dear {ngo['NGOName']},\n\nYou have received a distribution of {amount_per_ngo} funds.\n\nBest regards,\nSahyog Team"
-                mail.send(msg)
-
-            # Log the distribution in DistributionFunds table
-            cursor.execute('''
-                INSERT INTO DistributionFunds (NGOCount, TotalDistributionAmount, DistributionDate)
-                VALUES (%s, %s, CURDATE())
-            ''', (ngo_count, total_funds))
-
-            # Clear the Funds table after distribution
-            cursor.execute('DELETE FROM Funds')
-            mysql.connection.commit()
-
-        return {"message": "Funds distributed and notifications sent successfully!"}
+        mysql.connection.commit()
+        return jsonify({"message": "Funds from company donor added successfully!"}), 201
 
     except MySQLdb.Error as e:
-        mysql.connection.rollback()
-        return {"error": str(e)}
+        return jsonify({"error": str(e)}), 500
     finally:
         cursor.close()
 

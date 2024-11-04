@@ -19,32 +19,38 @@ mysql = MySQL(app)
 def create_donor_tables():
     try:
         cursor = mysql.connection.cursor()
-        # SQL query to create the IndividualDonor and CompanyDonor tables
+        # Create IndividualDonor table
         cursor.execute('''
             CREATE TABLE IF NOT EXISTS IndividualDonor (
-                DonorID INT AUTO_INCREMENT PRIMARY KEY,
+                IndividualDonorID INT AUTO_INCREMENT PRIMARY KEY,
                 Name VARCHAR(255) NOT NULL,
                 ContactNumber VARCHAR(15),
                 Email VARCHAR(255),
                 Address VARCHAR(255),
                 Password VARCHAR(255)
-               );    
-                       
+            );
+        ''')
+        
+        # Create CompanyDonor table
+        cursor.execute('''
             CREATE TABLE IF NOT EXISTS CompanyDonor (
-                DonorID INT AUTO_INCREMENT PRIMARY KEY,
+                CompanyDonorID INT AUTO_INCREMENT PRIMARY KEY,
                 CompanyName VARCHAR(255) NOT NULL,
                 ContactPerson VARCHAR(255),
                 ContactNumber VARCHAR(15),
                 Email VARCHAR(255),
                 Address VARCHAR(255),
-                Password VARCHAR(255),
-                );
+                Password VARCHAR(255)
+            );
         ''')
+        
         mysql.connection.commit()
         cursor.close()
         return 'Donor tables created successfully!'
+    
     except MySQLdb.Error as e:
-        return f"Error creating Donor tables: {e}"
+        return f"Error creating Donor tables: {str(e)}"
+
     
 # Route to login as an individual donor using name and password
 @app.route('/login_individual', methods=['POST'])
@@ -77,36 +83,6 @@ def login_company():
         return jsonify({'message': 'Login successful!'}), 200
     else:
         return jsonify({'error': 'Invalid DonorID or password'}), 400
-
-# Route to add funds as an individual donor
-@app.route('/add_funds_individual', methods=['POST'])
-def add_funds_individual():
-    if 'donor_id' in session and session.get('donor_type') == 'individual':
-        data = request.json
-        cursor = mysql.connection.cursor()
-        # Add to funds table
-        cursor.execute('INSERT INTO funds (FundAmount, DonorID) VALUES (%s, %s)', 
-                       (data['FundAmount'], session['donor_id']))
-        mysql.connection.commit()
-        cursor.close()
-        return jsonify({'message': 'Funds added successfully for individual donor!'}), 201
-    else:
-        return jsonify({'error': 'Unauthorized access'}), 403
-
-# Route to add funds as a company donor
-@app.route('/add_funds_company', methods=['POST'])
-def add_funds_company():
-    if 'donor_id' in session and session.get('donor_type') == 'company':
-        data = request.json
-        cursor = mysql.connection.cursor()
-        # Add to funds table
-        cursor.execute('INSERT INTO funds (FundAmount, DonorID) VALUES (%s, %s)', 
-                       (data['FundAmount'], session['donor_id']))
-        mysql.connection.commit()
-        cursor.close()
-        return jsonify({'message': 'Funds added successfully for company donor!'}), 201
-    else:
-        return jsonify({'error': 'Unauthorized access'}), 403
 
 
 # Route to add an individual donor

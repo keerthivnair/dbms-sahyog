@@ -27,7 +27,7 @@ def create_ngo_table():
     try:
         cursor = mysql.connection.cursor()
         cursor.execute('''
-    CREATE TABLE IF NOT EXISTS NGO (                                                               
+    CREATE TABLE IF NOT EXISTS NGO (                                                              
     NGOID INT AUTO_INCREMENT PRIMARY KEY,
     LicenseNumber VARCHAR(255),
     NGOName VARCHAR(255) NOT NULL,
@@ -35,12 +35,7 @@ def create_ngo_table():
     YearOfEstablishment YEAR,
     Email VARCHAR(255),
     PhoneNumber VARCHAR(15),
-    NGO_Amount DECIMAL(10, 2),
-    Priority INT,
-    VolunteerID INT,
-    ReportID INT,
-    FOREIGN KEY (ReportID) REFERENCES Report(ReportID),
-    FOREIGN KEY (VolunteerID) REFERENCES Volunteers(VolunteerID)
+    NGO_Amount DECIMAL(10, 2)
 );
         ''')
         mysql.connection.commit()
