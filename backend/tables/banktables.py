@@ -26,11 +26,13 @@ def create_bankbill_table():
                AccountNo VARCHAR(17) NOT NULL,
                IFSC VARCHAR(11) NOT NULL,
                BranchName VARCHAR(255),
-               DonorID INT,
+               IndividualDonorID INT,
+               CompanyDonorID INT
                Amount DECIMAL(10, 2),
                BillDate DATE,
                PaymentStatus ENUM('Paid', 'Unpaid') DEFAULT 'Unpaid',
-               FOREIGN KEY (DonorID) REFERENCES Donor(DonorID)
+               FOREIGN KEY (IndividualDonorID) REFERENCES IndividualDonor(IndividualDonorID)
+               FOREIGN KEY (CompanyDonorID) REFERENCES CompanyDonor(CompanyDonorID)
            );
         """)
         mysql.connection.commit()

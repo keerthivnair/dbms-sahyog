@@ -2,7 +2,7 @@ from flask import Flask, request, jsonify
 from flask_mysqldb import MySQL
 import MySQLdb.cursors
 from flask_cors import CORS
-from locationtables import get_locations  # Ensure this function retrieves LocationID based on location name
+from locationtables import get_location_id  
 
 app = Flask(__name__)
 CORS(app)
@@ -29,13 +29,11 @@ def create_camp_table():
             VolunteerAvail INT NOT NULL,
             FundReq VARCHAR(50),
             FundAvail VARCHAR(50),
-            Volunteersroutedbysahyog INT,
-            Password INT,
+            Password varchar(100),
             LocationID INT,
             FOREIGN KEY(LocationID) REFERENCES Location(LocationID)
-        );
-
-    ''')
+        );   
+''')
     mysql.connection.commit()
     cursor.close()
     return 'Camp table created successfully!'
@@ -44,10 +42,10 @@ def create_camp_table():
 @app.route('/add_camp', methods=['POST'])
 def add_camp():
     data = request.json
-    cursor = mysql.connection.cursor()
+    cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
 
     # Retrieve LocationID based on LocationName (assumed to be part of 'data')
-    location_id = get_locations(data['LocationName'])  # Ensure get_locations fetches the LocationID
+    location_id = get_location_id(data['LocationID'])  # Ensure get_locations fetches the LocationID
 
     # Check for duplicate CampName and Password
     cursor.execute('SELECT * FROM Camp WHERE CampName = %s AND Password = %s', 
@@ -60,7 +58,7 @@ def add_camp():
     # Insert new camp if not a duplicate
     query = '''
         INSERT INTO Camp (CampName, Capacity, VolunteerReq, VolunteerAvail, FundReq, FundAvail, Password, LocationID)
-        VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+        VALUES (%s, %s, %s, %s, %s, %s, %s,%s)
     '''
     values = (data['CampName'], data['Capacity'], data['VolunteerReq'], data['VolunteerAvail'],
               data['FundReq'], data['FundAvail'], data['Password'], location_id)
@@ -133,6 +131,30 @@ def delete_camp(campname, password):
     mysql.connection.commit()
     cursor.close()
     return jsonify(message='Camp deleted successfully!')
+
+@app.route('/describe_camp_table', methods=['GET'])
+def describe_camp_table():
+    try:
+        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+        
+        # Query to get the structure of the Camp table
+        cursor.execute('''
+            SELECT COLUMN_NAME, COLUMN_TYPE, IS_NULLABLE, COLUMN_KEY, EXTRA
+            FROM information_schema.COLUMNS
+            WHERE TABLE_SCHEMA = %s AND TABLE_NAME = 'Camp';
+        ''', (app.config['MYSQL_DB'],))
+        
+        # Fetch all the results
+        camp_structure = cursor.fetchall()
+        cursor.close()
+        
+        # Return the structure in JSON format
+        return jsonify(camp_structure)
+    except MySQLdb.Error as e:
+        return f"Error describing Camp table: {e}"
+
+
+
 
 if __name__ == '__main__':
     app.run(debug=True)

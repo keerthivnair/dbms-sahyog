@@ -26,19 +26,7 @@ def create_report_table():
     ReportID INT AUTO_INCREMENT PRIMARY KEY,
     ReportDate DATE,
     ReportDetails TEXT,
-    ResourceID INT,
-    DonationID INT,
-    LocationID INT,
-    DonorID INT,
-    DisasterID INT,
     CampID INT,
-    Volunteers_req INT,
-    Volunteers_avail INT,
-    FOREIGN KEY (ResourceID) REFERENCES Resources(ResourceID),
-    FOREIGN KEY (DonationID) REFERENCES Donations(DonationID),
-    FOREIGN KEY (LocationID) REFERENCES Location(LocationID),
-    FOREIGN KEY (DonorID) REFERENCES Donor(DonorID),
-    FOREIGN KEY (DisasterID) REFERENCES Disaster(DisasterID),
     FOREIGN KEY (CampID) REFERENCES Camp(CampID)
 );
         ''')
@@ -55,9 +43,9 @@ def add_report():
     try:
         cursor = mysql.connection.cursor()
         cursor.execute('''
-            INSERT INTO Report (ReportDate, ReportDetails)
-            VALUES (%s, %s)
-        ''', (data['ReportDate'], data['ReportDetails']))
+            INSERT INTO Report (ReportDate, ReportDetails,CampID)
+            VALUES (%s, %s,%s)
+        ''', (data['ReportDate'], data['ReportDetails'],data['CampID']))
         mysql.connection.commit()
         cursor.close()
         return jsonify({'message': 'Report added successfully!'}), 201
@@ -66,18 +54,36 @@ def add_report():
 
 @app.route('/reports', methods=['GET'])
 def get_reports():
-    cursor = mysql.connection.cursor()
-    cursor.execute('SELECT * FROM Report;')
-    results = cursor.fetchall()
-    reports = []
-    for row in results:
-        reports.append({
-           'ReportID': row[0],
-           'ReportDate': str(row[1]),  # Ensure the date is converted to string
-           'ReportDetails': row[2]
-        })
-    cursor.close()
-    return jsonify(reports)
+    try:
+        cursor = mysql.connection.cursor()
+        # Use JOIN to include CampName and LocationName from the Camp and Location tables
+        cursor.execute('''
+            SELECT 
+                Report.ReportID, 
+                Report.ReportDate, 
+                Report.ReportDetails, 
+                Camp.CampName, 
+                Location.LocationName  -- Assuming LocationName is the column you want from the Location table
+            FROM 
+                Report
+            JOIN 
+                Camp ON Report.CampID = Camp.CampID
+            JOIN 
+                Location ON Camp.LocationID = Location.LocationID
+        ''')
+        results = cursor.fetchall()
+        reports = []
+        for row in results:
+            reports.append({
+                'ReportDate': str(row[0]),  # Ensure the date is converted to string
+                'ReportDetails': row[1],
+                'CampName': row[2],
+                'LocationName': row[3]  # Include LocationName from the Location table
+            })
+        cursor.close()
+        return jsonify(reports)
+    except MySQLdb.Error as e:
+        return jsonify({'error': f"Error fetching reports: {e}"}), 400
 
 # Route to update a report
 @app.route('/update_report/<int:report_id>', methods=['PUT'])
