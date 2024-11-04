@@ -97,8 +97,8 @@
 
     <script>
         function login() {
-            const ngoId = document.getElementById('ngoId').value;
-            const username = document.getElementById('username').value;
+            const ngoId = document.getElementById('NGOID').value;
+            const username = document.getElementById('NGOName').value;
             const password = document.getElementById('password').value;
             const errorMessage = document.getElementById('error-message');
 
@@ -114,17 +114,17 @@
 
         function showDonators() {
             // Fetch and display Donator information from the database
-            document.getElementById('output').innerHTML = "<h3>Donator Info:</h3><p>List of Donators...</p>"; // Replace with actual data fetching logic
+            document.getElementById('output').innerHTML = "http://127.0.0.1:5000/get_individual_donors"; // Replace with actual data fetching logic
         }
 
         function showCamps() {
             // Fetch and display Camp information from the database
-            document.getElementById('output').innerHTML = "<h3>Camp Info:</h3><p>List of Camps...</p>"; // Replace with actual data fetching logic
+            document.getElementById('output').innerHTML = "http://127.0.0.1:5000/get_camps"; // Replace with actual data fetching logic
         }
 
         function showVolunteers() {
             // Fetch and display Volunteer information from the database
-            document.getElementById('output').innerHTML = "<h3>Volunteer Info:</h3><p>List of Volunteers...</p>"; // Replace with actual data fetching logic
+            document.getElementById('output').innerHTML = "http://127.0.0.1:5000/get_volunteers"; // Replace with actual data fetching logic
         }
     </script>
 </body>

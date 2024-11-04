@@ -10,7 +10,7 @@ CORS(app)
 # MySQL Configuration
 app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'root'  # Replace with your MySQL username
-app.config['MYSQL_PASSWORD'] = 'keerthi2005@'  # Replace with your MySQL password
+app.config['MYSQL_PASSWORD'] = 'Godsgrace@1'  # Replace with your MySQL password
 app.config['MYSQL_DB'] = 'sahyogdb'  # Replace with your MySQL database name
 
 # Initialize MySQL
@@ -219,7 +219,17 @@ def delete_volunteer(username, password):
     except Exception as e:
         return jsonify({'error': f"Error deleting volunteer: {e}"}), 400
     
-  
+  #route to fetch info of volunteers
+@app.route('/get_volunteers', methods=['GET'])
+def get_individual_donors():
+    try:
+        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+        cursor.execute('SELECT * FROM volunteertables')
+        donors = cursor.fetchall()
+        cursor.close()
+        return jsonify(volunteers)
+    except MySQLdb.Error as e:
+        return f"Error fetching volunteer info: {e}"
 
 if __name__ == '__main__':
     app.run(debug=True)
